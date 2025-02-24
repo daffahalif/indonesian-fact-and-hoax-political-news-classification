@@ -1,5 +1,7 @@
 import pandas as pd # For I/O, Data Transformation
 from sklearn.model_selection import train_test_split
+# install scikit learn
+# install nltk
 
 ## Import data ke dataframe
 data1 = pd.read_excel("archive/Summarized/dataset_cnn_summarized.xlsx")
@@ -31,6 +33,15 @@ def case_folding(data):
     return data
 
 df['case_folding'] = df['summarized'].apply(lambda x : case_folding(x))
+
+### TOKENIZING ###
+def tokenize(teks):
+    import nltk
+    nltk.download('punkt_tab')
+    teks = nltk.tokenize.word_tokenize(teks)
+    return teks
+df['tokenizing'] = df['case_folding'].apply(lambda x : tokenize(x))
+
 
 # def hapuss(data):   
 #     if      data.find("(BE") == -1 \
