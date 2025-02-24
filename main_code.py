@@ -13,6 +13,24 @@ df3 = data3[['summarized','label']]
 df4 = data4[['summarized','label']]
 
 df = pd.concat([df1,df2,df3,df4])
+df = df.dropna()
+df = df.drop_duplicates()
+df = df.reset_index() 
+df = df.iloc[:,1:3]
+label = df.label.value_counts() 
+
+### CASE FOLDING ###
+def case_folding(data):
+    import re
+    # Lowertext (tidak kapital)
+    data = data.lower()
+    # Menghilangkan Angka 0-9, Tanda Baca, Karakter Spesial, dan Emoji
+    data = re.sub(r'[^A-Za-z]', ' ', data)
+    # Menghilangkan Whitespace
+    data = data.strip()
+    return data
+
+df['case_folding'] = df['summarized'].apply(lambda x : case_folding(x))
 
 # def hapuss(data):   
 #     if      data.find("(BE") == -1 \
