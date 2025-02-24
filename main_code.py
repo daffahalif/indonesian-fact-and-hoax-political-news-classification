@@ -2,6 +2,7 @@ import pandas as pd # For I/O, Data Transformation
 from sklearn.model_selection import train_test_split
 # install scikit learn
 # install nltk
+# install sastrawi
 
 ## Import data ke dataframe
 data1 = pd.read_excel("archive/Summarized/dataset_cnn_summarized.xlsx")
@@ -22,6 +23,7 @@ df = df.iloc[:,1:3]
 label = df.label.value_counts() 
 
 ### CASE FOLDING ###
+print('\nCASE FOLDING\n')
 def case_folding(data):
     import re
     # Lowertext (tidak kapital)
@@ -35,12 +37,26 @@ def case_folding(data):
 df['case_folding'] = df['summarized'].apply(lambda x : case_folding(x))
 
 ### TOKENIZING ###
+print('\nTOKENIZING\n')
 def tokenize(teks):
     import nltk
     nltk.download('punkt_tab')
     teks = nltk.tokenize.word_tokenize(teks)
     return teks
 df['tokenizing'] = df['case_folding'].apply(lambda x : tokenize(x))
+
+### REMOVE STOPWORD ###
+print('\nSTOPWORD\n')
+def rmstopwords(teks):
+    from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
+    factory = StopWordRemoverFactory()
+    swsastra = factory.get_stop_words()
+    nostopwords = []
+    for word in teks:
+        if (word not in swsastra):
+            nostopwords.append(word)
+    return nostopwords
+df['stopwords_removed'] = df['tokenizing'].apply(lambda x : rmstopwords(x))
 
 
 # def hapuss(data):   
