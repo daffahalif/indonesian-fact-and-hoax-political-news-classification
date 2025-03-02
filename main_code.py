@@ -19,8 +19,16 @@ df = pd.concat([df1,df2,df3,df4])
 df = df.dropna()
 df = df.drop_duplicates()
 df = df.reset_index() 
-df = df.iloc[:,1:3]
-label = df.label.value_counts() 
+df = df.iloc[:,1:]
+label = df.label.value_counts()
+
+df = df.sort_values(by='label')
+df = df.reset_index()
+# df = df.iloc[14000:,:]
+# df = df.reset_index()
+df = df.iloc[:,2:]
+print(df.head(10),"\n")
+print(df.groupby('label').count(),"\n")
 
 ### CASE FOLDING ###
 print('\nCASE FOLDING\n')
@@ -58,6 +66,26 @@ def rmstopwords(teks):
     return nostopwords
 df['stopwords_removed'] = df['tokenizing'].apply(lambda x : rmstopwords(x))
 
+### STEMMING ###
+print('\nSTEMMING\n')
+
+import time # digunakan untuk menghitung waktu compile
+tm = time.ctime()
+print("Waktu program dimulai :",tm)
+start = time.time()
+
+def stemming(teks):
+    cleantext = []
+    for word in teks:
+        from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+        factorystem = StemmerFactory()
+        stemmer = factorystem.create_stemmer()
+        stemmed_word = stemmer.stem(word)
+        cleantext.append(stemmed_word)
+    return cleantext
+df['stemming'] = df['stopwords_removed'].apply(lambda x : stemming(x))
+
+print("Stemming Done :",round((time.time()-start)/60,2),"mins")
 
 # def hapuss(data):   
 #     if      data.find("(BE") == -1 \
