@@ -24,9 +24,8 @@ label = df.label.value_counts()
 
 df = df.sort_values(by='label')
 df = df.reset_index()
-# df = df.iloc[14000:,:]
-# df = df.reset_index()
-df = df.iloc[:,2:]
+#  
+df = df.iloc[:,1:]
 print(df.head(10),"\n")
 print(df.groupby('label').count(),"\n")
 
@@ -86,6 +85,17 @@ def stemming(teks):
 df['stemming'] = df['stopwords_removed'].apply(lambda x : stemming(x))
 
 print("Stemming Done :",round((time.time()-start)/60,2),"mins")
+
+### COMBINE TOKENS ###
+def join(teks):
+    teks = " ".join([char for char in teks])
+    return teks
+df['Text_Preprocessed'] = df['stemming'].apply(lambda x : join(x))
+
+### MEMISAH INPUT DAN OUTPUT ###
+X = df.iloc[:,6] # TEKS HASIL PREPROCESSING / INPUT
+y = df.iloc[:,1] # KELAS / OUTPUT
+
 
 # def hapuss(data):   
 #     if      data.find("(BE") == -1 \
